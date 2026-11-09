@@ -1,0 +1,647 @@
+!  Station Extraction Parameters.
+!
+! git $Id$
+!========================================================= Hernan G. Arango ===
+!  Copyright (c) 2002-2025 The ROMS Group                                     !
+!    Licensed under a MIT/X style license                                     !
+!    See License_ROMS.md                                                      !
+!==============================================================================
+!                                                                             !
+! Input parameters can be entered in ANY order, provided that the parameter   !
+! KEYWORD (usually, upper case) is typed correctly followed by "="  or "=="   !
+! symbols. Any comment lines are allowed and must begin with an exclamation   !
+! mark (!) in column one.  Comments may  appear to the right of a parameter   !
+! specification to improve documentation.  Comments will be ignored  during   !
+! reading.  Blank lines are also allowed and ignored. Continuation lines in   !
+! a parameter specification are allowed and must be preceded by a backslash   !
+! (\).  In some instances, more than one value is required for a parameter.   !
+! If fewer values are provided, the  last value  is assigned for the entire   !
+! parameter array.  The multiplication symbol (*),  without blank spaces in   !
+! between, is allowed for a parameter specification.  For example, in a two   !
+! grids nested application:                                                   !
+!                                                                             !
+!    AKT_BAK == 2*1.0d-6  2*5.0d-6              ! m2/s                        !
+!                                                                             !
+! indicates that the first two entries of array AKT_BAK,  in fortran column-  !
+! major order, will have the same value of "1.0d-6" for grid 1,  whereas the  !
+! next two entries will have the same value of "5.0d-6" for grid 2.           !
+!                                                                             !
+! In multiple levels of nesting and/or multiple connected domains  step-ups,  !
+! "Ngrids" entries are expected for some of these parameters.  In such case,  !
+! the order of the entries for a parameter is extremely important.  It  must  !
+! follow the same order (1:Ngrids) as in the state variable declaration. The  !
+! USER may follow the above guidelines for specifying his/her values.  These  !
+! parameters are marked by "==" plural symbol after the KEYWORD.              !
+!                                                                             !
+!==============================================================================
+!
+! Switch to control the writing of stations data within nested and/or multiple
+! connected grids, [1:Ngrids].
+
+   Lstations == T
+
+! Logical switches (TRUE/FALSE) to activate writing of fields in STATION
+! output file, [Sout(:,ng), ng=1, Ngrids].
+
+Sout(idUvel) == T       ! u                  3D U-velocity
+Sout(idVvel) == T       ! v                  3D V-velocity
+Sout(idu3dE) == T       ! u_eastward         3D U-eastward at RHO-points
+Sout(idv3dN) == T       ! v_northward        3D V-nortward at RHO-points
+Sout(idWvel) == T       ! w                  3D W-velocity
+Sout(idOvel) == F       ! omega              3D omega vertical velocity
+Sout(idUbar) == T       ! ubar               2D U-velocity
+Sout(idVbar) == T       ! vbar               2D V-velocity
+Sout(idu2dE) == T       ! ubar_eastward      2D U-eastward  at RHO-points
+Sout(idv2dN) == T       ! vbar_northward     2D V-northward at RHO-points
+Sout(idFsur) == T       ! zeta               free-surface
+Sout(idBath) == T       ! bath               time-dependent bathymetry
+
+Sout(idTvar) == T T     ! temp, salt, ...    all (NT) tracers
+
+Sout(idUsms) == T       ! sustr              surface U-stress
+Sout(idVsms) == T       ! svstr              surface V-stress
+Sout(idUbms) == T       ! bustr              bottom U-stress
+Sout(idVbms) == T       ! bvstr              bottom V-stress
+
+Sout(idUbrs) == F       ! bustrc             bottom U-current stress
+Sout(idVbrs) == F       ! bvstrc             bottom V-current stress
+Sout(idUbws) == F       ! bustrw             bottom U-wave stress
+Sout(idVbws) == F       ! bvstrw             bottom V-wave stress
+Sout(idUbcs) == F       ! bustrcwmax         bottom max wave-current U-stress
+Sout(idVbcs) == F       ! bvstrcwmax         bottom max wave-current V-stress
+
+Sout(idUbot) == F       ! Ubot               bed wave orbital U-velocity
+Sout(idVbot) == F       ! Vbot               bed wave orbital V-velocity
+Sout(idUbur) == F       ! Ur                 bottom U-velocity above bed
+Sout(idVbvr) == F       ! Vr                 bottom V-velocity above bed
+
+Sout(idW2xx) == F       ! Sxx_bar            2D radiation stress, Sxx component
+Sout(idW2xy) == F       ! Sxy_bar            2D radiation stress, Sxy component
+Sout(idW2yy) == F       ! Syy_bar            2D radiation stress, Syy component
+Sout(idU2rs) == F       ! Ubar_Rstress       2D radiation U-stress
+Sout(idV2rs) == F       ! Vbar_Rstress       2D radiation V-stress
+Sout(idU2Sd) == F       ! ubar_stokes        2D U-Stokes velocity
+Sout(idV2Sd) == F       ! vbar_stokes        2D V-Stokes velocity
+
+Sout(idW3xx) == F       ! Sxx                3D radiation stress, Sxx component
+Sout(idW3xy) == F       ! Sxy                3D radiation stress, Sxy component
+Sout(idW3yy) == F       ! Syy                3D radiation stress, Syy component
+Sout(idW3zx) == F       ! Szx                3D radiation stress, Szx component
+Sout(idW3zy) == F       ! Szy                3D radiation stress, Szy component
+Sout(idU3rs) == F       ! u_Rstress          3D U-radiation stress
+Sout(idV3rs) == F       ! v_Rstress          3D V-radiation stress
+Sout(idU3Sd) == F       ! u_stokes           3D U-Stokes velocity
+Sout(idV3Sd) == F       ! v_stokes           3D V-Stokes velocity
+
+Sout(idWamp) == F       ! Hwave              wave height
+Sout(idWlen) == F       ! Lwave              wave length
+Sout(idWdir) == F       ! Dwave              wave direction
+Sout(idWptp) == F       ! Pwave_top          wave surface period
+Sout(idWpbt) == F       ! Pwave_bot          wave bottom period
+Sout(idWorb) == F       ! Ub_swan            wave bottom orbital velocity
+Sout(idWdis) == F       ! Wave_dissip        wave dissipation
+
+Sout(idPair) == T       ! Pair               surface air pressure
+Sout(idUair) == T       ! Uair               surface U-wind component
+Sout(idVair) == T       ! Vair               surface V-wind component
+
+Sout(idTsur) == T T     ! shflux, ssflux     surface net heat and salt flux
+Sout(idLhea) == T       ! latent             latent heat flux
+Sout(idShea) == T       ! sensible           sensible heat flux
+Sout(idLrad) == T       ! lwrad              longwave radiation flux
+Sout(idSrad) == T       ! swrad              shortwave radiation flux
+Sout(idEmPf) == T       ! EminusP            E-P flux
+Sout(idevap) == T       ! evaporation        evaporation rate
+Sout(idrain) == T       ! rain               precipitation rate
+
+Sout(idDano) == T       ! rho                density anomaly
+Sout(idVvis) == T       ! AKv                vertical viscosity
+Sout(idTdif) == T       ! AKt                vertical T-diffusion
+Sout(idSdif) == T       ! AKs                vertical Salinity diffusion
+Sout(idHsbl) == T       ! Hsbl               depth of surface boundary layer
+Sout(idHbbl) == T       ! Hbbl               depth of bottom boundary layer
+Sout(idMtke) == T       ! tke                turbulent kinetic energy
+Sout(idMtls) == F       ! gls                turbulent length scale
+
+! Number of stations to process in each nested grid.  These values are
+! essential because the station arrays are dynamically allocated using
+! these values, [1:Ngrids].
+
+    NSTATION ==  330
+
+! Station locations for all grids in any desired order.  The horizontal
+! location for a particular station may be specified in terms of fractional
+! (I,J) grid pairs (FLAG=0) or (longitude,latitude) grid pairs (FLAG=1).
+! Here, FLAG is a special switch and may be used for multiple purposes.
+! The GRID column indicates nested grid number to process. This value must
+! be one in non-nested applications.  The COMMENT section is ignored during
+! reading and may be used to help documentation.
+
+! Version 2026-07-22 John Wilkin 
+!
+!   Merged NOS (Bahram Khazaei) and Fathom (Haibo Zong) stations files. 
+!   Added MOVE (mooring.ucsd.edu/move) east of Guadelope along 16°N. 
+!   Added old WHOI Line-W sites.
+!   Added Bermuda BATS time series sites. 
+!       MOVE, BATS and LINEW data at ocean-ops.org/oceansites.
+!   Added Magdalena Andres' CPIES.
+!   A previous version of this file had numerous points separated by less
+!   than 2 km and these were rationalized into single points. There are
+!   still many points separated by only a few km which will not return
+!   significantly different time series, but do represent actual distinct
+!   instruments, e.g. Bermmda and Duck tide gauges
+!                              
+!   Consider adding nominal points along the Oleander rhumb line
+!
+!   To facilitate parsing by script roms_read_stations_file.m (J. Wilkin)
+!   for plotting by plot_eccofs_stations.m, the comments scheme is:
+!      First word is the nominal observing NETWORK
+!      Second is the nominal SITE within that network. 
+!      Additional comments note duplicates or other info
+
+POS =  GRID  FLAG     X-POS       Y-POS         COMMENT
+
+       1      1      -65.464      18.261      ! NDBC     41056
+       1      1      -80.096      26.001      ! NDBC     41122  
+       1      1      -70.169      42.800      ! NDBC     44098  
+       1      1      -68.996      44.055      ! NDBC     44033  
+       1      1      -82.924      27.173      ! NDBC     42013  
+       1      1      -81.968      24.407      ! NDBC     42095  
+       1      1      -66.537      17.870      ! NDBC     42085  
+       1      1      -74.839      36.612      ! NDBC     44088          NDBC-44014
+       1      1      -77.715      34.142      ! NDBC     41110  
+       1      1      -75.285      35.258      ! NDBC     41120  
+       1      1      -82.931      27.590      ! NDBC     42098  
+       1      1      -70.566      42.523      ! NDBC     44029  
+       1      1      -71.032      41.387      ! NDBC     44085  
+       1      1      -70.329      41.840      ! NDBC     44090  
+       1      1      -73.769      39.772      ! NDBC     44091  
+       1      1      -64.763      18.249      ! NDBC     41052  
+       1      1      -68.112      44.103      ! NDBC     44034  
+       1      1      -70.426      43.179      ! NDBC     44030  
+       1      1      -83.741      27.505      ! NDBC     42022  
+       1      1      -83.086      26.010      ! NDBC     42023  
+       1      1      -76.266      37.201      ! NDBC     44072  
+       1      1      -83.475      25.171      ! NDBC     42026  
+       1      1      -84.275      27.352      ! NDBC     42099  
+       1      1      -75.714      36.200      ! NDBC     44056  
+       1      1      -89.649      28.988      ! NDBC     42084  
+       1      1      -66.099      18.474      ! NDBC     41053  
+       1      1      -75.593      36.258      ! NDBC     44100  
+       1      1      -91.2117     27.1503     ! GCOOS    42G01    
+       1      1      -92.0045     26.0363     ! GCOOS    42G02    
+       1      1      -91.1906     27.2267     ! GCOOS    42G03    
+       1      1      -89.9909     27.1978     ! GCOOS    42G05    
+       1      1      -94.6737     26.2237     ! GCOOS    42G06    
+       1      1      -92.2368     27.0415     ! GCOOS    42G07    
+       1      1      -90.1651     27.5375     ! GCOOS    42G08    
+       1      1      -90.7744     28.9192     ! GCOOS    WAVCIS10A    
+       1      1      -92.490      27.550      ! GCOOS    42361    
+       1      1      -90.8722     27.795      ! GCOOS    42362    
+       1      1      -89.220      28.160      ! GCOOS    42363    
+       1      1      -88.0918     29.0606     ! GCOOS    42364    
+       1      1      -89.120      28.154      ! GCOOS    42365    
+       1      1      -90.283      27.207      ! GCOOS    42369    
+       1      1      -90.536      27.3215     ! GCOOS    42370    
+       1      1      -90.519      27.779      ! GCOOS    42372    
+       1      1      -94.6254     27.3539     ! GCOOS    42373    
+       1      1      -88.0563     28.866      ! GCOOS    42374    
+       1      1      -88.289      28.521      ! GCOOS    42375    
+       1      1      -90.9681     27.2925     ! GCOOS    42377    
+       1      1      -90.181      27.362      ! GCOOS    42379    
+       1      1      -93.5384     27.3038     ! GCOOS    42382    
+       1      1      -89.924      27.370      ! GCOOS    42383    
+       1      1      -90.326      27.992      ! GCOOS    42384    
+       1      1      -88.266      28.340      ! GCOOS    42385    
+       1      1      -90.7142     27.326      ! GCOOS    42386    
+       1      1      -91.109      27.7297     ! GCOOS    42388    
+       1      1      -94.898      26.1288     ! GCOOS    42390    
+       1      1      -89.240      28.157      ! GCOOS    42394    
+       1      1      -88.2673     28.7545     ! GCOOS    42397    
+       1      1      -92.0403     26.132      ! GCOOS    42398          GCOOS-42399
+       1      1      -87.934      28.574      ! GCOOS    42400    
+       1      1      -90.556      27.509      ! GCOOS    42401    
+       1      1      -90.5202     26.9327     ! GCOOS    42402    
+       1      1      -89.2092     28.0256     ! GCOOS    42403    
+       1      1      -92.3091     26.572      ! GCOOS    42851    
+       1      1      -89.048      27.962      ! GCOOS    42858    
+       1      1      -96.7288     26.1878     ! GCOOS    42864    
+       1      1      -91.3233     27.1457     ! GCOOS    42865    
+       1      1      -92.1319     26.1905     ! GCOOS    42866    
+       1      1      -87.931      28.695      ! GCOOS    42869    
+       1      1      -92.3572     27.270      ! GCOOS    42874    
+       1      1      -91.4358     26.1651     ! GCOOS    42876    
+       1      1      -94.460      26.6634     ! GCOOS    42877    
+       1      1      -90.9586     27.0261     ! GCOOS    42879    
+       1      1      -90.338      27.132      ! GCOOS    42880    
+       1      1      -91.5719     26.9118     ! GCOOS    42881    
+       1      1      -94.4603     26.078      ! GCOOS    42884    
+       1      1      -88.5478     28.1477     ! GCOOS    42887    
+       1      1      -89.465      28.394      ! GCOOS    42889    
+       1      1      -91.5793     26.6573     ! GCOOS    42891    
+       1      1      -90.2881     27.6789     ! GCOOS    42892    
+       1      1      -90.786      27.59       ! GCOOS    42896    
+       1      1      -95.5162     26.1029     ! GCOOS    42901    
+       1      1      -92.3957     27.560      ! GCOOS    42902    
+       1      1      -92.646      26.312      ! GCOOS    42903    
+       1      1      -94.7612     26.1874     ! GCOOS    42906          GCOOS-42882
+       1      1      -90.566      27.0928     ! GCOOS    42907    
+       1      1      -92.741      27.359      ! GCOOS    42917    
+       1      1      -88.089      28.785      ! GCOOS    42924    
+       1      1      -89.3783     28.301      ! GCOOS    42925    
+       1      1      -88.575      28.933      ! GCOOS    42928    
+       1      1      -90.740      27.1163     ! GCOOS    42932    
+       1      1      -90.5293     26.5197     ! GCOOS    42934    
+       1      1      -88.995      28.235      ! GCOOS    42935    
+       1      1      -90.9697     26.9436     ! GCOOS    42936    
+       1      1      -94.5577     26.183      ! GCOOS    42940  
+       1      1      -68.20428    44.39219    ! COOPS-WL 8413320
+       1      1      -70.23844    43.67971    ! COOPS-WL 8418150        (-70.24416,43.65805)
+       1      1      -70.87407    41.58446    ! COOPS-WL 8447636        (-70.91370,41.62120)
+       1      1      -71.94145    41.01227    ! COOPS-WL 8510560        (-71.95944,41.04833)
+       1      1      -74.01417    40.70055    ! COOPS-WL 8518750
+       1      1      -74.03323    40.46594    ! COOPS-WL 8531680        (-74.00940,40.46690)
+       1      1      -74.97657    38.99568    ! COOPS-WL 8536110        (-74.96000,38.96830)
+       1      1      -75.37668    39.30539    ! COOPS-WL 8537121 
+       1      1      -75.58897    39.58220    ! COOPS-WL 8551762
+       1      1      -75.11333    38.98667    ! COOPS-WL 8555889 
+       1      1      -75.09533    38.81340    ! COOPS-WL 8557380        (-75.11928,38.78283)
+       1      1      -76.08313    38.22610    ! COOPS-WL 8571421        (-76.03830,38.22000)
+       1      1      -76.24455    39.21344    ! COOPS-WL 8573364 
+       1      1      -76.48003    38.98388    ! COOPS-WL 8575512
+       1      1      -76.41240    38.32026    ! COOPS-WL 8577330        (-76.45170,38.31670)
+       1      1      -76.00299    37.15511    ! COOPS-WL 8632200        (-75.98840,37.16520)
+       1      1      -77.01667    38.33291    ! COOPS-WL 8635027        (-77.03660,38.31975)
+       1      1      -76.44322    38.01789    ! COOPS-WL 8635750        (-76.46440,37.99610)
+       1      1      -76.28978    37.61550    ! COOPS-WL 8636580 
+       1      1      -76.47881    37.22650    ! COOPS-WL 8637689 
+       1      1      -76.08330    37.03290    ! COOPS-WL 8638901 
+       1      1      -77.78670    34.21331    ! COOPS-WL 8658163 
+       1      1      -78.91830    33.65500    ! COOPS-WL 8661070 
+       1      1      -80.59015    28.39454    ! COOPS-WL 8721604        (-80.59310,28.41580)
+       1      1      -80.03416    26.61278    ! COOPS-WL 8722670        FL-Strait-west
+       1      1      -81.11744    24.73103    ! COOPS-WL 8723970        (-81.10650,24.71100)
+       1      1      -81.82450    26.15536    ! COOPS-WL 8725114        (-81.78830,26.13670)
+       1      1      -82.56210    27.63870    ! COOPS-WL 8726384
+       1      1      -82.60675    27.75169    ! COOPS-WL 8726520        (-82.62690,27.76060)
+       1      1      -82.42444    27.90317    ! COOPS-WL 8726674        (-82.42140,27.92310)
+       1      1      -82.83170    27.97830    ! COOPS-WL 8726724 
+       1      1      -83.03170    29.13500    ! COOPS-WL 8727520 
+       1      1      -85.87859    30.21375    ! COOPS-WL 8729210 
+       1      1      -88.07500    30.25000    ! COOPS-WL 8735180 
+       1      1      -88.08800    30.56520    ! COOPS-WL 8735391 
+       1      1      -88.04467    30.62890    ! COOPS-WL 8736897        (-88.05811,30.64950)
+       1      1      -88.58185    30.35028    ! COOPS-WL 8741533        (-88.56306,30.36778)
+       1      1      -89.32580    30.32634    ! COOPS-WL 8747437 
+       1      1      -89.40750    28.93220    ! COOPS-WL 8760922 
+       1      1      -89.67325    29.86811    ! COOPS-WL 8761305
+       1      1      -89.95056    29.23758    ! COOPS-WL 8761724        (-89.95670,29.26330)
+       1      1      -90.21376    29.07578    ! COOPS-WL 8762075        (-90.19930,29.11420)
+       1      1      -91.33810    29.44960    ! COOPS-WL 8764227 
+       1      1      -91.38390    29.36750    ! COOPS-WL 8764314 
+       1      1      -92.33943    29.53033    ! COOPS-WL 8766072        (-92.30519,29.55169)
+       1      1      -93.84180    29.68930    ! COOPS-WL 8770822 
+       1      1      -93.72000    29.46900    ! COOPS-WL 8771367 
+       1      1      -97.13208    26.06312    ! COOPS-WL 8779749        (-97.15480,26.06750)
+       1      1      -64.70870    17.78139    ! COOPS-WL 9751364        (-64.69839,17.74769)
+       1      1      -64.72422    18.31825    ! COOPS-WL 9751381 
+       1      1      -64.75380    17.69470    ! COOPS-WL 9751401 
+       1      1      -64.92554    18.30322    ! COOPS-WL 9751639        (-64.92580,18.33058)
+       1      1      -65.30247    18.30086    ! COOPS-WL 9752235 
+       1      1      -65.46547    18.16705    ! COOPS-WL 9752621        (-65.44380,18.15253)
+       1      1      -65.46181    18.06870    ! COOPS-WL 9752695        (-65.47136,18.09386)
+       1      1      -65.63111    18.33528    ! COOPS-WL 9753216
+       1      1      -65.81352    18.06052    ! COOPS-WL 9754229        (-65.83300,18.05508)
+       1      1      -66.20121    17.95879    ! COOPS-WL 9755968        (-66.22594,17.94908)
+       1      1      -66.69014    18.49518    ! COOPS-WL 9757811        (-66.70236,18.48053)
+       1      1      -66.77698    17.95983    ! COOPS-WL 9758066        (-66.76661,18.00586)
+       1      1      -67.06486    17.95947    ! COOPS-WL 9759110        (-67.04639,17.97011)
+       1      1      -67.18959    18.21035    ! COOPS-WL 9759394        (-67.16245,18.21883)
+       1      1      -67.16458    18.45664    ! COOPS-WL 9759413
+       1      1      -67.93821    18.08929    ! COOPS-WL 9759938 
+       1      1      -76.01280    36.95940    ! COOPS-CU cb0102
+       1      1      -76.13383    37.14000    ! COOPS-CU cb0201 
+       1      1      -76.24950    37.01120    ! COOPS-CU cb0301 
+       1      1      -76.33388    36.96295    ! COOPS-CU cb0402         WL-8638610  
+       1      1      -76.41448    36.95602    ! COOPS-CU cb0601 
+       1      1      -76.15462    37.67442    ! COOPS-CU cb0801 
+       1      1      -76.38390    38.40270    ! COOPS-CU cb1001 
+       1      1      -76.39000    38.98000    ! COOPS-CU cb1102 
+       1      1      -76.44360    36.98380    ! COOPS-CU cb1401 
+       1      1      -96.95653    27.79239    ! COOPS-CU cc0101 
+       1      1      -97.01981    27.82608    ! COOPS-CU cc0201 
+       1      1      -95.28167    28.92444    ! COOPS-CU fr0101         WL-8772471
+       1      1      -94.74083    29.34222    ! COOPS-CU g06010         WL-8771341
+       1      1      -81.30286    30.39259    ! COOPS-CU jx0102 
+       1      1      -81.42481    30.69288    ! COOPS-CU kb0201         (-81.45926,30.71049)
+       1      1      -93.33417    29.69300    ! COOPS-CU lc0102         CU-lc0101
+       1      1      -93.34293    29.76513    ! COOPS-CU lc0201         WL-8768094
+       1      1      -89.43350    28.89480    ! COOPS-CU lm0301
+       1      1      -88.02225    30.64853    ! COOPS-CU mb0402         (-88.03464,30.67083)
+       1      1      -91.42967    29.31800    ! COOPS-CU mc0101  
+       1      1      -96.31344    28.39533    ! COOPS-CU mg0201         (-96.33000,28.42667)
+       1      1      -80.09700    25.76128    ! COOPS-CU mi0301         CU-mi0201 CU-mi0101
+       1      1      -74.03800    40.60640    ! COOPS-CU n03020  
+       1      1      -80.09033    26.09490    ! COOPS-CU pe0201         CU-pe0101 WL-8722956
+       1      1      -82.86742    27.60424    ! COOPS-CU qr0501         CU-qr0401 CU-qr0301
+       1      1      -75.58630    35.91230    ! COOPS-CU qr0601
+       1      1      -93.81617    29.62873    ! COOPS-CU sn0101  
+       1      1      -82.65525    27.62065    ! COOPS-CU t01010  
+       1      1      -82.55373    27.86287    ! COOPS-CU t02010         WL-8726607
+       1      1      -82.59877    27.66395    ! COOPS-CU t03010  
+       1      1      -72.42000    34.78000    ! NDBC     41001  
+       1      1      -74.95000    31.73000    ! NDBC     41002  
+       1      1      -79.08000    32.50000    ! NDBC     41004  
+       1      1      -80.85000    31.40000    ! NDBC     41008  
+       1      1      -80.18000    28.50000    ! NDBC     41009  
+       1      1      -78.47000    28.85000    ! NDBC     41010  
+       1      1      -77.75000    33.43000    ! NDBC     41013  
+       1      1      -75.37000    35.02000    ! NDBC     41025  
+       1      1      -53.03000    14.57000    ! NDBC     41040  
+       1      1      -64.85000    21.08000    ! NDBC     41043  
+       1      1      -58.62000    21.57000    ! NDBC     41044  
+       1      1      -68.33000    23.83000    ! NDBC     41046  
+       1      1      -71.47000    27.55000    ! NDBC     41047  
+       1      1      -69.70000    31.88000    ! NDBC     41048  
+       1      1      -62.27000    27.50000    ! NDBC     41049  
+       1      1      -89.63000    25.92000    ! NDBC     42001  
+       1      1      -93.77000    25.95000    ! NDBC     42002  
+       1      1      -85.60000    25.92000    ! NDBC     42003  
+       1      1      -87.53000    30.05000    ! NDBC     42012  
+       1      1      -95.33000    27.90000    ! NDBC     42019  
+       1      1      -96.67000    26.97000    ! NDBC     42020  
+       1      1      -94.40000    29.23000    ! NDBC     42035  
+       1      1      -84.50000    28.50000    ! NDBC     42036  
+       1      1      -86.02000    28.77000    ! NDBC     42039  
+       1      1      -88.23000    29.20000    ! NDBC     42040  
+       1      1      -94.10000    22.13000    ! NDBC     42055  
+       1      1      -84.97000    19.82000    ! NDBC     42056  
+       1      1      -81.57000    16.97000    ! NDBC     42057  
+       1      1      -75.93000    14.10000    ! NDBC     42058  
+       1      1      -67.62000    15.25000    ! NDBC     42059  
+       1      1      -63.20000    16.42000    ! NDBC     42060  
+       1      1      -69.12000    43.20000    ! NDBC     44005  
+       1      1      -70.13000    43.52000    ! NDBC     44007  
+       1      1      -69.25000    40.48000    ! NDBC     44008  
+       1      1      -74.68000    38.45000    ! NDBC     44009  
+       1      1      -66.53000    41.08000    ! NDBC     44011  
+       1      1      -70.65000    42.33000    ! NDBC     44013  
+       1      1      -72.03000    40.68000    ! NDBC     44017  
+       1      1      -70.15000    42.20000    ! NDBC     44018  
+       1      1      -70.27000    41.48000    ! NDBC     44020  
+       1      1      -73.17000    40.25000    ! NDBC     44025  
+       1      1      -67.30000    44.28000    ! NDBC     44027  
+       1      1      -73.70000    40.37000    ! NDBC     44065  
+       1      1      -72.63000    39.62000    ! NDBC     44066  
+       1      1      -80.08000    25.58000    ! NDBC     FWYF1  
+       1      1      -97.05000    27.82000    ! NDBC     PTAT2          CU-cc0302+WL-8775241
+       1      1      -81.25000    29.85000    ! NDBC     SAUF1  
+       1      1      -76.43000    38.88000    ! NDBC     TPLM2  
+       1      1      -82.46042    27.04783    ! NDBC     VENF1          (-82.45000,27.07000)
+       1      1      -70.77080    40.13401    ! OOI      CP01CNPM       133-m 
+       1      1      -70.88887    40.22652    ! OOI      CP02PMCI       127-m
+       1      1      -70.88727    40.10100    ! OOI      CP02PMCO       146-m
+       1      1      -70.78035    40.36490    ! OOI      CP02PMUI       95-m
+       1      1      -70.77105    39.94318    ! OOI      CP02PMUO       445-m
+       1      1      -70.87849    40.36202    ! OOI      CP03ISPM       92-m
+       1      1      -70.88605    39.94312    ! OOI      CP04OSPM       438-m
+       1      1      -75.12470    35.95362    ! OOI      CP12CNSW       37-m
+       1      1      -74.84603    35.95465    ! OOI      CP13EAPM       101-m
+       1      1      -74.77860    36.04887    ! OOI      CP14NEPM       303-m
+       1      1      -74.82652    36.17097    ! OOI      CP13NOPM       104-m
+       1      1      -74.85090    35.85520    ! OOI      CP14SEPM       305-m
+       1      1      -74.85390    35.72202    ! OOI      CP13SOPM       99-m
+       1      1      -75.33332    35.94552    ! OOI      CP12WESW       32-m
+       1      1      -74.41830    39.35500    ! GLOSS    ACNJ           WL-8534720
+       1      1      -64.72264    32.37569    ! GLOSS    BMDA           WL-2695540
+       1      1      -84.89114    21.90561    ! GLOSS    CABOS          (-84.90000,21.90000)
+       1      1      -75.56586    10.40213    ! GLOSS    CART           (-75.55000,10.40000)
+       1      1      -79.89174     9.36995    ! GLOSS    COCO           (-79.88333,9.36666)
+       1      1      -75.74553    36.20311    ! GLOSS    DPNC           WL-8651370
+       1      1      -76.06702    23.79780    ! GLOSS    EXUM           (-76.10000,23.78333)
+       1      1      -61.09893    14.58628    ! GLOSS    FTFR           (-61.06333,14.60167)
+       1      1      -81.80800    24.55300    ! GLOSS    KWFL           WL-8452660
+       1      1      -66.93718    10.64023    ! GLOSS    LAGU           (-66.93333,10.61666)
+       1      1      -80.11666    25.90000    ! GLOSS    MIAM  
+       1      1      -71.36615    41.49324    ! GLOSS    NERI           WL-8452660
+       1      1      -89.64483    21.30415    ! GLOSS    PROG           (-89.65000,21.30000)
+       1      1      -76.84929    17.91054    ! GLOSS    PTRO           (-76.85000,17.93333) 
+       1      1      -61.53572    10.63747    ! GLOSS    PTSP           (-61.51666,10.65000) 
+       1      1      -66.11670    18.46170    ! GLOSS    SANJ           WL-9755371
+       1      1      -82.49280    23.11359    ! GLOSS    SIBON          (-82.46666,23.10000)
+       1      1      -71.55506    21.45080    ! GLOSS    SOCA           (-71.53333,21.48333)
+       1      1      -78.98333    26.68333    ! GLOSS    STPT           FL-Strait-east
+       1      1      -96.09958    19.20369    ! GLOSS    VERA           (-96.12355,19.19206)
+       1      1      -80.13454    25.72901    ! GLOSS    VIRK           WL-8723214                   
+       1      1      -51.5263     15.3238     ! PIES     MOVE-1         MOVE-16N-array
+       1      1      -57.0027     15.9403     ! PIES     MOVE-2
+       1      1      -60.5053     16.3333     ! PIES     MOVE-3
+       1      1      -60.6047     16.3338     ! PIES     MOVE-4
+       1      1      -60.7362     16.3323     ! PIES     MOVE-5
+       1      1      -69.4300     39.3610     ! LINEW    M1
+       1      1      -69.2670     39.1300     ! LINEW    M2
+       1      1      -69.1500     39.0340     ! LINEW    M3
+       1      1      -68.5420     38.2550     ! LINEW    M4
+       1      1      -68.3980     38.0440     ! LINEW    M5
+       1      1      -68.2970     37.4653     ! LINEW    M6
+       1      1      -64.5000     32.1667     ! BATS     Hydro-S
+       1      1      -64.1667     31.6667     ! BATS     Main
+       1      1      -64.6134     32.3826     ! BATS     Shelf1
+       1      1      -64.5957     32.3421     ! BATS     Shelf2
+       1      1      -64.5746     32.2993     ! BATS     Shelf3
+       1      1      -64.5514     32.2587     ! BATS     Shelf4
+       1      1      -64.7433     31.7979     ! BATS     DeepN1
+       1      1      -64.3782     31.9780     ! BATS     DeepN2
+       1      1      -64.0177     32.1580     ! BATS     DeepN3
+       1      1      -64.5316     31.4871     ! BATS     DeepC1
+       1      1      -63.8045     31.8485     ! BATS     DeepC2
+       1      1      -64.3153     31.1714     ! BATS     DeepS1
+       1      1      -63.9533     31.3564     ! BATS     DeepS2
+       1      1      -63.5882     31.5340     ! BATS     DeepS3 
+       1      1      -74.6167     35.8517     ! PIES     PEACH-P1       Andres-PEACH-PIES
+       1      1      -74.3500     35.6894     ! PIES     PEACH-P2              
+       1      1      -74.8202     35.3080     ! PIES     PEACH-P5      
+       1      1      -75.1664     34.9400     ! PIES     PEACH-P6      
+       1      1      -75.6000     34.5000     ! PIES     PEACH-P7      
+       1      1      -74.6097     35.7512     ! PIES     PEACH-AP     
+       1      1      -74.3662     36.2334     ! PIES     SWOT-P1        Andres-SWOTAdAC
+       1      1      -74.5339     35.9997     ! PIES     SWOT-P2 
+       1      1      -74.1969     36.0039     ! PIES     SWOT-P3 
+       1      1      -74.6728     36.0001     ! PIES     SWOT-P4 
+       1      1      -74.3671     36.0001     ! PIES     SWOT-P5 
+       1      1      -74.2832     35.7502     ! PIES     SWOT-P6 
+       1      1      -62.8045     38.5355     ! PIES     NESMA-P1       Andres-New-Eng-Seamount-Acoustic-Pilot
+       1      1      -63.4190     38.7418     ! PIES     NESMA-P2 
+       1      1      -62.5993     38.7563     ! PIES     NESMA-P3 
+       1      1      -64.1432     39.0867     ! PIES     NESMA-M1       Andres-New-Eng-Seamount-Acoustic-Main 
+       1      1      -62.9676     39.1982     ! PIES     NESMA-M2 
+       1      1      -62.8109     38.2455     ! PIES     NESMA-M3 
+       1      1      -63.5192     38.6589     ! PIES     NESMA-M4 
+       1      1      -63.9923     38.1350     ! PIES     NESMA-M5 
+       1      1      -63.8208     38.3018     ! PIES     NESMA-M6 
+       1      1      -74.7061     36.0521     ! PIES     OOI-C1         Andres-Pioneer-Adjacent-PIES
+       1      1      -74.7702     35.7001     ! PIES     OOI-C2     
+       1      1      -75.09470    35.77820    ! PEACH    B1             Haines-Mooring-data-rep-2022
+       1      1      -75.94120    34.78230    ! PEACH    B2      
+       1      1      -74.83378    36.00063    ! PEACH    A1      
+       1      1      -74.86332    35.75137    ! PEACH    A2      
+       1      1      -74.80880    35.59500    ! PEACH    A3      
+       1      1      -75.24783    35.42942    ! PEACH    A4      
+       1      1      -75.09402    35.13738    ! PEACH    A5      
+       1      1      -75.30770    34.94220    ! PEACH    A6      
+       1      1      -75.67630    35.00002    ! PEACH    A7      
+       1      1      -75.67593    34.56558    ! PEACH    A8
+!
+!  GLOSSARY:
+!  =========
+!
+!  This input file provides the positions of stations data to be extracted
+!  and written into STATIONS output file.  This file is use to monitor model
+!  fields at frequent time intervals.  It is also used to sample the model at
+!  observation locations in order to build the penalty function used in
+!  variational data assimilation.
+!
+!------------------------------------------------------------------------------
+! Control Switch.
+!------------------------------------------------------------------------------
+!
+! Lstations      Switch to control the writing of station data within nested
+!                  and/or multiple connected grids. Ngrid values are expected.
+!                  By default this switch is set to TRUE in "mod_scalars" for
+!                  all grids when the CPP option STATIONS is activated.  The
+!                  USER can control which grid to process by turning on/off
+!                  this switch.
+!
+!------------------------------------------------------------------------------
+! Logical switches (TRUE/FALSE) to activate writing of fields in STATIONS
+! output file.  Except for tracer type variables, Ngrids values are expected
+! for all switches.
+!------------------------------------------------------------------------------
+!
+!  Sout(idUvel)  Write out 3D U-velocity component.
+!  Sout(idVvel)  Write out 3D V-velocity component.
+!  Sout(idu3dE)  Write out 3D Eastward  velocity component at RHO-points.
+!  Sout(idv3dN)  Write out 3D Northward velocity component at RHO-points.
+!  Sout(idWvel)  Write out 3D W-velocity component.
+!  Sout(idOvel)  Write out 3D omega vertical velocity.
+!  Sout(idUbar)  Write out 2D U-velocity component.
+!  Sout(idVbar)  Write out 2D V-velocity component.
+!  Sout(idu2dE)  Write out 2D Eastward  velocity component at RHO-points.
+!  Sout(idv2dN)  Write out 2D Northward velocity component at RHO-points.
+!  Sout(idFsur)  Write out free-surface.
+!  Sout(idBath)  Write out time-dependent bathymetry.
+!
+!  Sout(idTvar)  Write out tracer type variables,  (NT,Ngrids) values are
+!                  Expected.
+!
+!  Sout(idUsms)  Write out surface U-momentum stress.
+!  Sout(idVsms)  Write out surface V-momentum stress.
+!  Sout(idUbms)  Write out bottom  U-momentum stress.
+!  Sout(idVbms)  Write out bottom  V-momentum stress.
+!
+!  Sout(idUbrs)  Write out current-induced, U-momentum stress.
+!  Sout(idVbrs)  Write out current-induced, V-momentum stress.
+!  Sout(idUbws)  Write out wind-induced, bottom U-wave stress.
+!  Sout(idVbws)  Write out wind-induced, bottom V-wave stress.
+!  Sout(idUbcs)  Write out bottom maximum wave and current U-stress.
+!  Sout(idVbcs)  Write out bottom maximum wave and current V-stress.
+!
+!  Sout(idUbot)  Write out wind-induced, bed wave orbital U-velocity.
+!  Sout(idVbot)  Write out wind-induced, bed wave orbital V-velocity.
+!  Sout(idUbur)  Write out bottom U-velocity above bed.
+!  Sout(idVbvr)  Write out bottom V-velocity above bed.
+!
+!  Sout(idWztw)  Write out WEC_VF quasi-static sea level adjustment.
+!  Sout(idWqsp)  Write out WEC_VF quasi-static pressure.
+!  Sout(idWbeh)  Write out WEC_VF Bernoulli head.
+!
+!  Sout(idU2rs)  Write out WEC 2D U-stress.
+!  Sout(idV2rs)  Write out WEC 2D V-stress.
+!  Sout(idU3rs)  Write out WEC 3D U-stress.
+!  Sout(idV3rs)  Write out WEC 3D V-stress.
+!
+!  Sout(idU2Sd)  Write out 2D Stokes U-velocity.
+!  Sout(idV2Sd)  Write out 2D Stokes V-velocity.
+!  Sout(idU3Sd)  Write out 3D Stokes U-velocity.
+!  Sout(idV3Sd)  Write out 3D Stokes V-velocity.
+!  Sout(idW3St)  Write out 3D Stokes W-velocity.
+!  Sout(idW3Sd)  Write out 3D Stokes omega-velocity.
+!
+!  Sout(idWamp)  Write out wave significat height.
+!  Sout(idWlen)  Write out wave mean wavelength.
+!  Sout(idWlep)  Write out wave peak wavelength.
+!  Sout(idWdir)  Write out wave mean direction.
+!  Sout(idWdip)  Write out wave peak direction.
+!  Sout(idWptp)  Write out wave surface period.
+!  Sout(idWpbt)  Write out wave bottom period.
+!  Sout(idWorb)  Write out wave bottom orbital velocity.
+!  Sout(idWbrk)  Write out wave breaking (percent).
+!  Sout(idUwav)  Write out wave depth-averaged U-velocity.
+!  Sout(idVwav)  Write out wave depth-averaged V-velocity.
+!  Sout(idWdif)  Write out wave dissipation from bottom friction.
+!  Sout(idWdib)  Write out wave dissipation from breaking.
+!  Sout(idWdiw)  Write out wave dissipation from whitecapping.
+!  Sout(idWdis)  Write out wave roller dissipation.
+!  Sout(idWrol)  Write out wave roller action density.
+!  Sout(idPair)  Write out surface air pressure.
+!  Sout(idUair)  Write out surface U-wind component.
+!  Sout(idVair)  Write out surface V-wind component.
+!
+!  Sout(idTsur)  Write out surface net heat and salt flux.
+!  Sout(idLhea)  Write out latent heat flux.
+!  Sout(idShea)  Write out sensible heat flux.
+!  Sout(idLrad)  Write out long-wave radiation flux.
+!  Sout(idSrad)  Write out short-wave radiation flux.
+!  Sout(idEmPf)  Write out E-P flux.
+!  Sout(idevap)  Write out evaporation rate.
+!  Sout(idrain)  Write out precipitation rate.
+!
+!  Sout(idDano)  Write out density anomaly.
+!  Sout(idVvis)  Write out vertical viscosity coefficient.
+!  Sout(idTdif)  Write out vertical diffusion coefficient of temperature.
+!  Sout(idSdif)  Write out vertical diffusion coefficient of salinity.
+!  Sout(idHsbl)  Write out depth of oceanic surface boundary layer.
+!  Sout(idHbbl)  Write out depth of oceanic bottom boundary layer.
+!  Sout(idMtke)  Write out turbulent kinetic energy.
+!  Sout(idMtls)  Write out turbulent kinetic energy times length scale.
+!
+!  Sout(idBott)  Write out exposed sediment layer properties, 1:MBOTP.
+!
+!------------------------------------------------------------------------------
+! Station positions KEYWORDS.
+!------------------------------------------------------------------------------
+!
+!  NSTATION      Number of stations to process in each nested grid. Ngrids
+!                  values are expected.  These values are essential because
+!                  the station arrays are dynamically allocated using these
+!                  values.
+!
+!  POS           Station locations for all grids in any desired order.  The
+!                  horizontal location for a particular station can be
+!                  specified in terms of fractional (I,J) grid pairs (FLAG=0)
+!                  or (longitude,latitude) grid pairs (FLAG=1). Here, FLAG is
+!                  a special switch and may be used for multiple purposes.
+!                  The GRID column indicates nested grid number to process.
+!                  This value must be one in non-nested applications.  The
+!                  COMMENT section is ignored during reading and may be used
+!                  to help documentation.  This locations are used to
+!                  interpolate model data before writting to output STATIONS
+!                  file.  The stations locations are read using the following
+!                  statement:
+!
+!                  is(1:Ngrids)=0
+!                  DO WHILE (.true.)
+!                    read (unit,*,ERR=10) igrid, flag, Xpos, Ypos
+!                    ng=MAX(1,ABS(ng))
+!                    is(ng)=ic(ng)+1
+!                    SCALARS(ng)%Sflag(is(ng))=flag
+!                    SCALARS(ng)%SposX(is(ng))=Xpos
+!                    SCALARS(ng)%SposY(is(ng))=Ypos
+!                  END DO
+!
+!                Since there is no decoding during the reading of the stations
+!                locations, the POS keyword must be the last one to process.
+!                That is, it should be at the end of the input specification.
+!
+!
+

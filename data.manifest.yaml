@@ -1,0 +1,18 @@
+# What `hpc data sync eccofs` keeps on EFS: S3 prefix -> EFS path.
+# Edit, merge to main (CI uploads it), then run the sync.
+# exact-timestamps on config makes single-character template edits sync.
+# forcing/std_background is not listed: run_eccofs.sh fetches the day's two files.
+
+model: eccofs
+
+sync:
+  - s3: models/eccofs/data/config
+    efs: /models/eccofs/data/config
+    exact-timestamps: true
+
+  # grids, tides, nudging coefficients, background-error covariance
+  - s3: models/eccofs/data/data
+    efs: /models/eccofs/data/data
+
+  - s3: models/eccofs/data/forcing/era5
+    efs: /models/eccofs/data/forcing/era5

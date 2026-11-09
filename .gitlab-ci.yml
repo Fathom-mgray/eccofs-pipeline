@@ -1,0 +1,88 @@
+# ECCOFS CI: CI runner image, S3 deploy, hpc/eccofs image build -- see INFRASTRUCTURE.md ("CI").
+
+stages:
+  - ci-image
+  - deploy
+  - build
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: /certs
+
+.aws-auth:
+  id_tokens:
+    GITLAB_OIDC_TOKEN:
+      aud: https://gitlab.com
+  before_script:
+    - |
+      export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
+      $(aws sts assume-role-with-web-identity \
+      --role-arn ${AWS_ROLE_ARN} \
+      --role-session-name "gitlab-${CI_PROJECT_NAME}-${CI_PIPELINE_ID}" \
+      --web-identity-token ${GITLAB_OIDC_TOKEN} \
+      --duration-seconds 3600 \
+      --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+      --output text))
+
+# The runner image the other jobs use; built here, in this project's registry.
+ci-image:
+  stage: ci-image
+  image: docker:29.5.3
+  services:
+    - docker:29.5.3-dind
+  script:
+    - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin "$CI_REGISTRY"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:ci" ci/
+    - docker push "$CI_REGISTRY_IMAGE:ci"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    # changes: is always true outside push pipelines, so pin the source.
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
+      changes:
+        - ci/Dockerfile
+
+# A merged edit to a script, helper, template or the manifest goes live on the next run.
+eccofs-deploy:
+  extends: .aws-auth
+  image: $CI_REGISTRY_IMAGE:ci
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
+      changes:
+        - deploy.sh
+        - data.manifest.yaml
+        - scripts/**/*.sh
+        - python/**/*.py
+        - config/**/*.in
+        - config/**/*.yaml
+  script:
+    - ./deploy.sh
+
+# hpc/eccofs = the platform's hpc/roms-base + the three ECCOFS ROMS binaries + python/NCO.
+eccofs-docker-image:
+  extends: .aws-auth
+  image: $CI_REGISTRY_IMAGE:ci
+  stage: build
+  services:
+    - docker:29.5.3-dind
+  variables:
+    DOCKER_IMAGE_ADDRESS: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hpc/eccofs
+    BASE_IMAGE: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hpc/roms-base:latest
+  before_script:
+    - !reference [ .aws-auth, before_script ]
+    - cd container/
+    - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+  script:
+    - docker build --pull --build-arg "BASE_IMAGE=${BASE_IMAGE}" -t "${DOCKER_IMAGE_ADDRESS}:${CI_COMMIT_SHA}" .
+    - docker push "${DOCKER_IMAGE_ADDRESS}:${CI_COMMIT_SHA}"
+    - docker tag "${DOCKER_IMAGE_ADDRESS}:${CI_COMMIT_SHA}" "${DOCKER_IMAGE_ADDRESS}:latest"
+    - docker push "${DOCKER_IMAGE_ADDRESS}:latest"
+  rules:
+    # Upstream: aws-batch-hpc triggers this after rebuilding hpc/roms-base.
+    - if: '$CI_PIPELINE_SOURCE == "pipeline"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '($CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main") || $CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - container/Dockerfile
+        - container/*.sh
+        - .gitlab-ci.yml
